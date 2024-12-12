@@ -68,7 +68,7 @@ const goToPage = (page: number): void => {
     >
       <PostCard v-for="post in posts" :key="post.id" :post="post" />
     </div>
-    <footer class="mt-8 flex justify-center items-center space-x-4">
+    <!-- <footer class="mt-8 flex justify-center items-center space-x-4">
       <button
         @click="goToPage(currentPage - 1)"
         :disabled="currentPage === 1"
@@ -88,7 +88,13 @@ const goToPage = (page: number): void => {
       >
         Next
       </button>
-    </footer>
+    </footer> -->
+
+    <FooterComponent
+      :currentPage="currentPage"
+      :totalPages="totalPages"
+      :goToPage="goToPage"
+    />
   </div>
 </template>
 
