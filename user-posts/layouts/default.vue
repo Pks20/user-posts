@@ -7,7 +7,6 @@ import Navbar from '~/components/Navbar.vue';
 <template>
     <div>
         <Navbar/>
-        <h1>default layout</h1>
     </div>
     <slot/>
 </template>

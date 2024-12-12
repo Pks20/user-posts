@@ -4,7 +4,7 @@
 
 <template>
     <div>
-        <h1>dynamic page</h1>
+       post detail page
     </div>
 </template>
 
