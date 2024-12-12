@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-
-const {data, error}=await useFetch<Post[]>("https://jsonplaceholder.typicode.com/posts")
+import { ref } from "vue";
 
 interface Post {
   userId: number;
@@ -10,17 +8,56 @@ interface Post {
   body: string;
 }
 
+const currentPage = ref<number>(1);
+const limit = ref<number>(16);
+const totalPosts = ref<number>(0);
 const posts = ref<Post[]>([]);
+const error = ref<string | null>(null);
 
-if (data.value) {
-  posts.value = data.value;
+const fetchPosts = async () => {
+  try {
+    const { data, error: fetchError } = await useFetch<Post[]>(
+      `https://jsonplaceholder.typicode.com/posts?_page=${currentPage.value}&_limit=${limit.value}`
+    );
+
+    if (data.value) {
+      posts.value = data.value;
+      totalPosts.value = data.value?.length;
+    }
+
+    if (fetchError.value) {
+      error.value = fetchError.value.message;
+      return;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const { data: totalData } = await useFetch<Post[]>(
+  "https://jsonplaceholder.typicode.com/posts"
+);
+
+watch([currentPage, limit], fetchPosts, { immediate: true });
+
+if (totalData.value) {
+  totalPosts.value = totalData.value?.length;
 }
 
+const totalPages = Math.ceil(totalPosts.value / limit.value);
+
+console.log(totalPosts.value);
+
+const goToPage = (page: number): void => {
+  if (page >= 1 && page <= totalPages) {
+    currentPage.value = page;
+  }
+};
 </script>
 
 <template>
-   <div v-if="error" class="text-red-500">
-    Failed to fetch posts: {{ error.message }}
+  <div v-if="error" class="text-red-500">
+    Failed to fetch posts: {{ error }}
   </div>
   <div v-else class="container mx-auto p-4">
     <div
@@ -32,13 +69,47 @@ if (data.value) {
         class="bg-gray-800 p-4 border rounded-lg shadow-md"
       >
         <NuxtLink :to="`/details/${post.id}`">
-          <div class=" text-white">User ID: {{ post.id }}</div>
-          <h2 class="mt-4 text-xl font-semibold text-white">{{ post.title }}</h2>
+          <div class="text-white">User ID: {{ post.id }}</div>
+          <h2 class="mt-4 text-xl font-semibold text-white">
+            {{ post.title }}
+          </h2>
           <p class="text-white mt-2 w-full truncate">{{ post.body }}</p>
         </NuxtLink>
       </div>
     </div>
+    <footer class="flex justify-center items-center space-x-4">
+      <button
+        @click="goToPage(currentPage - 1)"
+        :disabled="currentPage === 1"
+        class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:opacity-50"
+      >
+        Previous
+      </button>
+
+      <span class="text-gray-800">
+        Page {{ currentPage }} of {{ totalPages }}
+      </span>
+
+      <button
+        @click="goToPage(currentPage + 1)"
+        :disabled="currentPage === totalPages"
+        class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:opacity-50"
+      >
+        Next
+      </button>
+    </footer>
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* .grid {
+  flex-grow: 1;
+} */
+</style>
