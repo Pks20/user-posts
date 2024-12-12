@@ -59,23 +59,14 @@ const goToPage = (page: number): void => {
   <div v-if="error" class="text-red-500">
     Failed to fetch posts: {{ error }}
   </div>
-  <div v-else class="container mx-auto p-4 min-h-screen flex flex-col justify-between">
+  <div
+    v-else
+    class="container mx-auto p-4 min-h-screen flex flex-col justify-between"
+  >
     <div
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
     >
-      <div
-        v-for="post in posts"
-        :key="post.id"
-        class="bg-gray-800 p-4 border rounded-lg shadow-md"
-      >
-        <NuxtLink :to="`/details/${post.id}`">
-          <div class="text-white">User ID: {{ post.id }}</div>
-          <h2 class="mt-4 text-xl font-semibold text-white">
-            {{ post.title }}
-          </h2>
-          <p class="text-white mt-2 w-full truncate">{{ post.body }}</p>
-        </NuxtLink>
-      </div>
+      <PostCard v-for="post in posts" :key="post.id" :post="post" />
     </div>
     <footer class="mt-8 flex justify-center items-center space-x-4">
       <button
@@ -101,6 +92,4 @@ const goToPage = (page: number): void => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
