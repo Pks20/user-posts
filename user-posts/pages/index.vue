@@ -34,7 +34,7 @@ if (data.value) {
         <NuxtLink :to="`/details/${post.id}`">
           <div class=" text-white">User ID: {{ post.id }}</div>
           <h2 class="mt-4 text-xl font-semibold text-white">{{ post.title }}</h2>
-          <p class="text-white mt-2">{{ post.body }}</p>
+          <p class="text-white mt-2 w-full truncate">{{ post.body }}</p>
         </NuxtLink>
       </div>
     </div>
