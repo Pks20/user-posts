@@ -59,7 +59,7 @@ const goToPage = (page: number): void => {
   <div v-if="error" class="text-red-500">
     Failed to fetch posts: {{ error }}
   </div>
-  <div v-else class="container mx-auto p-4">
+  <div v-else class="container mx-auto p-4 min-h-screen flex flex-col justify-between">
     <div
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
     >
@@ -77,7 +77,7 @@ const goToPage = (page: number): void => {
         </NuxtLink>
       </div>
     </div>
-    <footer class="flex justify-center items-center space-x-4">
+    <footer class="mt-8 flex justify-center items-center space-x-4">
       <button
         @click="goToPage(currentPage - 1)"
         :disabled="currentPage === 1"
@@ -102,14 +102,5 @@ const goToPage = (page: number): void => {
 </template>
 
 <style scoped>
-.container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
 
-/* .grid {
-  flex-grow: 1;
-} */
 </style>
