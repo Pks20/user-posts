@@ -27,7 +27,12 @@ const handleSubmit = () => {
 };
 
 const resetForm = () => {
-  formData.value = { ...props.initialData };
+  formData.value = { 
+  userId: 0,
+  id: 0,
+  title: "",
+  body: "", 
+}
 };
 
 const closeModal = () => {

@@ -98,6 +98,15 @@ const handleEdit = (post: Post) => {
   isUpdate.value = true;
   selectedPost.value = { ...post };
 };
+
+const handleDelete = (post: Post) => {
+  console.log("delete");
+  const id = post.id;
+  const index = posts.value.findIndex((post) => post.id === id);
+  if (index != -1) {
+    posts.value.splice(index, 1);
+  }
+};
 </script>
 
 <template>
@@ -130,6 +139,7 @@ const handleEdit = (post: Post) => {
         :key="post.id"
         :post="post"
         @edit="handleEdit"
+        @delete="handleDelete"
       />
     </div>
     <FooterComponent

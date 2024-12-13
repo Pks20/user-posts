@@ -5,14 +5,14 @@ const props=defineProps<{
   post: Post;
 }>();
 
-const emit = defineEmits(["edit"]);
+const emit = defineEmits(["edit", "delete"]);
 
 function handleEdit() {
   emit("edit", props.post);
 }
 
 function handleDelete() {
-  console.log("Delete post");
+  emit("delete", props.post)
 }
 </script>
 
@@ -37,7 +37,7 @@ function handleDelete() {
       />
     </div>
     <NuxtLink :to="`/details/${post.id}`">
-      <div class="text-white">User ID: {{ post.id }}</div>
+      <div class="text-white">User ID: {{ post.userId }}</div>
       <h2 class="mt-4 text-xl font-semibold text-white">
         {{ post.title }}
       </h2>
