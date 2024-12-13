@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { type Post } from "../types/Post";
 
-defineProps<{
+const props=defineProps<{
   post: Post;
 }>();
 
+const emit = defineEmits(["edit"]);
+
 function handleEdit() {
-  console.log("Edit post");
+  emit("edit", props.post);
 }
 
 function handleDelete() {

@@ -58,12 +58,23 @@ const goToPage = (page: number): void => {
 function handleCreate() {
   isModalVisible.value = true;
   isUpdate.value = false;
-  selectedPost.value = { userId: 0, title: "", body: "", id: 0 };
 }
 
 const handleFormSubmit = (formData: Post) => {
   if (isUpdate.value) {
-    console.log("Updating post", formData);
+    const id = formData?.id;
+
+    if (id) {
+      const index = posts.value.findIndex((post) => post.id === id);
+
+      if (index !== -1) {
+        posts.value[index] = { ...posts.value[index], ...formData };
+      } else {
+        console.error("Post not found with id:", id);
+      }
+    } else {
+      console.error("Invalid post ID:", id);
+    }
   } else {
     const newObj = { ...formData };
     fetch("https://jsonplaceholder.typicode.com/posts", {
@@ -80,6 +91,12 @@ const handleFormSubmit = (formData: Post) => {
       .then((response) => response.json())
       .then((json) => posts.value.push(json));
   }
+};
+
+const handleEdit = (post: Post) => {
+  isModalVisible.value = true;
+  isUpdate.value = true;
+  selectedPost.value = { ...post };
 };
 </script>
 
@@ -108,7 +125,12 @@ const handleFormSubmit = (formData: Post) => {
     <div
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
     >
-      <PostCard v-for="post in posts" :key="post.id" :post="post" />
+      <PostCard
+        v-for="post in posts"
+        :key="post.id"
+        :post="post"
+        @edit="handleEdit"
+      />
     </div>
     <FooterComponent
       :currentPage="currentPage"

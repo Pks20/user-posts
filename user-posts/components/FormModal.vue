@@ -10,6 +10,16 @@ const emit = defineEmits(["close", "submit"]);
 
 const formData = ref({ ...props.initialData });
 
+watch(
+  () => props.initialData,
+  (newData) => {
+    if (newData) {
+      formData.value = { ...newData };
+    }
+  },
+  { immediate: true }
+);
+
 const handleSubmit = () => {
   emit("submit", formData.value);
   resetForm();
