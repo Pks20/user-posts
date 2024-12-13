@@ -7,6 +7,6 @@ import Navbar from "./components/Navbar.vue";
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
-   
+    <UNotifications />
   </div>
 </template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { type Post } from "../types/Post";
+const toast = useToast();
 
 const currentPage = ref<number>(1);
 const limit = ref<number>(16);
@@ -69,11 +70,21 @@ const handleFormSubmit = (formData: Post) => {
 
       if (index !== -1) {
         posts.value[index] = { ...posts.value[index], ...formData };
+        toast.add({
+          title: "Success",
+          description: "Post updated successfully!",
+        });
       } else {
-        console.error("Post not found with id:", id);
+        toast.add({
+          title: "Error",
+          description: "Post not found",
+        });
       }
     } else {
-      console.error("Invalid post ID:", id);
+      toast.add({
+        title: "Error",
+        description: "Invalid post ID",
+      });
     }
   } else {
     const newObj = { ...formData };
@@ -89,7 +100,13 @@ const handleFormSubmit = (formData: Post) => {
       },
     })
       .then((response) => response.json())
-      .then((json) => posts.value.push(json));
+      .then((json) => {
+        posts.value.push(json);
+        toast.add({
+          title: "Success",
+          description: "Post created successfully!",
+        });
+      });
   }
 };
 
@@ -105,6 +122,15 @@ const handleDelete = (post: Post) => {
   const index = posts.value.findIndex((post) => post.id === id);
   if (index != -1) {
     posts.value.splice(index, 1);
+    toast.add({
+      title: "Success",
+      description: "Post deleted successfully!",
+    });
+  } else {
+    toast.add({
+      title: "Error",
+      description: "Error in deleting post",
+    });
   }
 };
 </script>
