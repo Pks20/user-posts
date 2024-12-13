@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import {type Post} from "../../types/Post"
 const route = useRoute();
 
 import { ref } from "vue";
@@ -6,13 +7,6 @@ import { ref } from "vue";
 const { data, error } = await useFetch<Post>(
   `https://jsonplaceholder.typicode.com/posts/${route.params.id}`
 );
-
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
 
 const post = ref<Post | null>(null);
 

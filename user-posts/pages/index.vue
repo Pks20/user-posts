@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { ref } from "vue";
-
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
+import { type Post } from "../types/Post";
 
 const currentPage = ref<number>(1);
 const limit = ref<number>(16);
 const totalPosts = ref<number>(0);
 const posts = ref<Post[]>([]);
 const error = ref<string | null>(null);
+
+const isModalVisible = ref(false);
+const isUpdate = ref(false);
+const selectedPost = ref<Post>({
+  userId: 0,
+  id: 0,
+  title: "",
+  body: "",
+});
 
 const fetchPosts = async () => {
   try {
@@ -46,16 +49,55 @@ if (totalData.value) {
 
 const totalPages = Math.ceil(totalPosts.value / limit.value);
 
-console.log(totalPosts.value);
-
 const goToPage = (page: number): void => {
   if (page >= 1 && page <= totalPages) {
     currentPage.value = page;
   }
 };
+
+function handleCreate() {
+  isModalVisible.value = true;
+  isUpdate.value = false;
+  selectedPost.value = { userId: 0, title: "", body: "", id: 0 };
+}
+
+const handleFormSubmit = (formData: Post) => {
+  if (isUpdate.value) {
+    console.log("Updating post", formData);
+  } else {
+    const newObj = { ...formData };
+    fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      body: JSON.stringify({
+        title: newObj.title,
+        body: newObj.body,
+        userId: newObj.userId,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => posts.value.push(json));
+  }
+};
 </script>
 
 <template>
+  <div class="flex justify-center my-4">
+    <UButton color="primary" variant="solid" @click="handleCreate"
+      >Create New Post</UButton
+    >
+  </div>
+
+  <FormModal
+    :isVisible="isModalVisible"
+    :isUpdate="isUpdate"
+    :initialData="selectedPost"
+    @close="isModalVisible = false"
+    @submit="handleFormSubmit"
+  />
+
   <div v-if="error" class="text-red-500">
     Failed to fetch posts: {{ error }}
   </div>
@@ -68,28 +110,6 @@ const goToPage = (page: number): void => {
     >
       <PostCard v-for="post in posts" :key="post.id" :post="post" />
     </div>
-    <!-- <footer class="mt-8 flex justify-center items-center space-x-4">
-      <button
-        @click="goToPage(currentPage - 1)"
-        :disabled="currentPage === 1"
-        class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:opacity-50"
-      >
-        Previous
-      </button>
-
-      <span class="text-gray-800">
-        Page {{ currentPage }} of {{ totalPages }}
-      </span>
-
-      <button
-        @click="goToPage(currentPage + 1)"
-        :disabled="currentPage === totalPages"
-        class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:opacity-50"
-      >
-        Next
-      </button>
-    </footer> -->
-
     <FooterComponent
       :currentPage="currentPage"
       :totalPages="totalPages"
