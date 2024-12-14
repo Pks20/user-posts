@@ -114,6 +114,7 @@ const handleEdit = (post: Post) => {
   isModalVisible.value = true;
   isUpdate.value = true;
   selectedPost.value = { ...post };
+  
 };
 
 const handleDelete = (post: Post) => {
