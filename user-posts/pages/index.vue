@@ -172,7 +172,7 @@ const handleDelete = (post: Post) => {
     <FooterComponent
       :currentPage="currentPage"
       :totalPages="totalPages"
-      :goToPage="goToPage"
+      @changePage="(n)=>goToPage(n)"
     />
   </div>
 </template>
